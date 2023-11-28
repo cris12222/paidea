@@ -1,0 +1,120 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+{% load static %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <!-- LOGOS DE CIFA Y PAIDE Y TITULO DEL AREA-->
+    <div class="row">
+       <div class="col-lg-12">
+            <img src="static/assets/img/LOGO-PAIDEA.png" class="img-fluid float-md-left" width="250" height="200" alt="Logo de AMAC"/>
+            <img src="static/assets/img/logodif.png" class="img-fluid float-md-right" width="200" height="200" alt="Logo de AMAC"/>
+            <div class="col-12 text-center ">
+            <h2><strong>PROGRAMA DE PREVENCION Y ATENCION INTEGRAL DEL EMBARAZO EN ADOLESCENTES</strong></h2>
+            </div>
+       </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-tabs card-header-primary">
+            <div class="nav-tabs-navigation ">
+              <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#conferencias" data-toggle="tab">
+                      <i class="material-icons">rocket</i> CONFERENCIAS
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#metas" data-toggle="tab">
+                      <i class="material-icons">checklist</i> METAS
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#temas" data-toggle="tab">
+                      <i class="material-icons">rocket</i> TEMAS
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane active" id="conferencias">
+                <table class="table">
+                  <tbody>
+                    {% for e in eventos %}
+                        <tr data-id="task{{ forloop.counter }}">
+                          <td>Evento: {{e.tema}}</td>
+                          <td class="td-actions text-right">
+                          </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane" id="temas">
+                <table class="table">
+                  <tbody>
+                    {% for t in temas %}
+                        <tr data-id="task{{ forloop.counter }}">
+                          <td>Tema: {{t.nombre}}</td>
+                          <td class="td-actions text-right">
+                          </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+
+              <div class="tab-pane" id="metas">
+                <table class="table">
+                  <tbody>
+                    {% for m in metas %}
+                        <tr data-id="task{{ forloop.counter }}">
+                          <td>Meta: {{m.descripcion}}</td>
+                          <td class="td-actions text-right">
+                          </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Aqui se configura el checklist de metas-->
+
+
+{% endblock javascripts %}

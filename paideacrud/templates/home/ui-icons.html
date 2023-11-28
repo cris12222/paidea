@@ -1,0 +1,150 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Icons {% endblock %} 
+
+<!-- EVENTOS  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% load widget_tweaks %}
+{{% block content %}
+  <div class="card">
+    <div class="card-header card-header-primary">
+      <h3 class="card-title">Crear informes</h3>
+      <p class="card-category">Ingresa los datos de tu evento</p> 
+    </div>
+    <div class="card-body">
+      <div id="typography">
+        <div class="card-title">
+          <h3>Registrar un evento</h3>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="bmd-label-floating">Seccione Tema</label>
+                <div class="dropdown">
+                  {% render_field eventoform.tema class="form-control" required="required" readonly="readonly" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" %}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Lugar</label>
+                {% render_field eventoform.ubicacion class="form-control" required="required" %}
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="bmd-label-floating">Fecha (dd/mm/aaaa)</label>
+                {% render_field eventoform.fecha type="date" class="form-control" required="required" %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="bmd-label-floating">Material</label>
+                {% render_field eventoform.material class="form-control" required="required" %}
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="bmd-label-floating">Asistencia femenina</label>
+                {% render_field eventoform.cant_mujeres class="form-control" required="required" %}
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="bmd-label-floating">Asistencia masculina</label>
+                {% render_field eventoform.cant_hombres class="form-control" required="required" %}
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+          <div class="clearfix"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header card-header-primary">
+      <h3 class="card-title">Eventos guardados</h3>
+      <p class="card-category">Gestiona tus eventos</p>
+      
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <div class="card-body">
+      <div id="typography">
+        <div class="card-title"></div>
+        <form>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="container">
+                  <div class="panel-group" id="accordion">
+                    {% for e in eventos %}
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">Evento: {{e.tema}} -- {{e.fecha}}</a>
+                        </h4>
+                      </div>
+                      <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse in">
+                        <form method="post">
+                          {% csrf_token %}
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="bmd-label-floating">Seccione Tema</label>
+                              <h5>{{e.tema}}</h5>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="bmd-label-floating">Lugar</label>
+                                <h5>{{e.ubicacion}}</h5>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="bmd-label-floating">Fecha (dd/mm/aaaa)</label>
+                                <h5>{{e.fecha}}</h5>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-3">
+                                <label class="bmd-label-floating">Material</label>
+                                <h5>{{e.material}}</h5>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="bmd-label-floating">Asistencia femenina</label>
+                                <h5>{{e.cant_mujeres}}</h5>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="bmd-label-floating">Asistencia masculina</label>
+                                <h5>{{e.cant_hombres}}</h5>
+                            </div>
+                          </div>
+                          <td><a class="btn btn-danger" id="btnEliminar{{ forloop.counter }}" href="{% url 'DeleteEvento' e.id  %}" ><span class="glyphicon glyphicon-trash">Eliminar</span></a></td>
+                              <td><a class="btn btn-success" id="btnGuardar{{ forloop.counter }}" href="{% url 'EditEvento' e.id  %}"  ><span class="glyphicon glyphicon-trash">Editar</span></a></td>
+                              <div class="clearfix"></div>
+                        </form>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock javascripts %}
+
+

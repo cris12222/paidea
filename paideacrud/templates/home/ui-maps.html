@@ -1,0 +1,428 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Maps {% endblock %} 
+
+<!-- REPORTES  -->
+{% block stylesheets %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
+
+
+{% endblock stylesheets %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header card-header-primary">
+        <h3 class="card-title">Reportes</h3>
+        <p class="card-category">Exporte sus reportes</p>
+    </div>
+    <div class="card-body">
+        <div id="typography">    
+            <form method="post">
+                {% csrf_token %} 
+                <div class="row">
+                    <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">Tipo de reporte</label>
+                                <div class="dropdown">
+                                    {% render_field fechaform.tipo id="opcionesInput1" required="required" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="opcionesInput3" class="form-control" %}
+                                    <div class="dropdown-menu" aria-labelledby="opcionesInput1">
+                                        <a class="dropdown-item" href="#" onclick="selectOption1('Reporte de metas')">Reporte de metas</a>
+                                        <a class="dropdown-item" href="#" onclick="selectOption1('Reporte de temas')">Reporte de temas</a>
+                                        <a class="dropdown-item" href="#" onclick="selectOption1('Reporte cualitativo de metas')">Reporte cualitativo de metas</a>
+                                    </div>
+                                </div>
+                                <script>
+                                    // Función para establecer el valor del input cuando se selecciona una opción
+                                    function selectOption1(valor) {
+                                    document.getElementById('opcionesInput1').value = valor;
+                                    }
+                                </script>
+                            </div>
+                    </div>
+                    <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">Inicio</label>
+                                    {% render_field fechaform.fecha_inicio type="date" required="required" class="form-control" %}
+                            </div>
+                    </div>
+                    <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="bmd-label-floating">Fin</label>
+                                {% render_field fechaform.fecha_fin type="date" required="required" class="form-control" %}
+                            </div>
+                    </div>
+                    <div class="col-md-3">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary pull-right">Buscar</button>
+                            </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+            <div class="row">
+                {% if tipoR == "Reporte de metas" %}
+                    <div class="col-md-12">
+                        <button class="btn btn-danger" onclick="generarPDF1()">Generar PDF</button>
+                        <button class="btn btn-danger" onclick="exportarExcel()">Exportar a Excel</button>
+                        <br><br><br>
+                        <div class="form-group">
+                            <iframe id="document-frame" style="display: none; width: 100%; height: 500px;"></iframe>
+                        </div>
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Generar PDF desde HTML</title>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+                            <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+                            
+                        </head>
+                        <body>
+                            <div id="contenido1">
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        table {
+                                        border-collapse: collapse;
+                                        width: 100%;
+                                        }
+                                        th, td {
+                                        border: 1px solid #dddddd;
+                                        text-align: left;
+                                        padding: 8px;
+                                        }
+                                        th {
+                                        background-color: #f2f2f2;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                <table>
+                                    <tr>
+                                        <td rowspan="3"><img src="static/assets/img/LOGO-PAIDEA.png" class="img-fluid float-md-left" width="150" height="100" alt="Logo de AMAC"/></td>
+                                        <td colspan="2">
+                                            <div class="text-center">SISTEMA PARA EL DESARROLLO INTEGRAL DE LA FAMILIA DEL ESTADO DE SONORA</div>
+                                        </td>
+                                        <td rowspan="3"><img src="static/assets/img/logocifa.jpg" class="img-fluid float-md-right" width="200" height="150" alt="Logo de AMAC"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="text-center">DIRECCION DE EVALUACION E INNOVACION INSTITUCIONAL</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="text-center">PROGRAMA DE PREVENCION Y ATENCION INTEGRAL DEL EMBARAZO EN ADOLESCENTES</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="align-left" aria-hidden="true">Municipio de: CAJEME</div>
+                                            <div class="align-right" aria-hidden="true">DEL: {{mes}} / AL: {{año}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Descripcion de la meta</th>
+                                        <th>Unidad de medida</th>
+                                        <th>Meta programada en el mes</th>
+                                        <th>Meta realizada en el mes</th>
+                                    </tr>
+                                    {% for t in metas %}
+                                    <tr>
+                                        <td rowspan="2">{{t.descripcion}}</td>
+                                        <td>Evento</td>
+                                        <td>{{t.meta_programada_evento}}</td>
+                                        <td>{{t.meta_realizada_evento}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Personas</td>
+                                        <td>{{t.meta_programada_personas}}</td>
+                                        <td>{{t.meta_realizada_personas}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                                <br><br><br><br>
+                                <table>
+                                    <tr>
+                                        <td class="text-center">MTRO. ARMANDO MEZA VALDEZ</td>
+                                        <td class="text-center">DRA. MARTHA PATRICIA PATIÑO FIERRO</td>
+                                    </tr>
+                                </table>
+                                </body>
+                            </div>
+                            <script>
+                                function generarPDF1() {
+                                    var opciones = {
+                                        margin: 10,
+                                        filename: 'REPORTE DE METAS.pdf',
+                                        image: { type: 'jpeg', quality: 0.98 },
+                                        html2canvas: { scale: 2 },
+                                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                                    };
+                                    var contenido = document.getElementById('contenido1');
+                                    html2pdf(contenido, opciones);
+                                }
+                            </script>
+                            <script>
+                                function exportarExcel() {
+                                    // Obtener datos de la tabla
+                                    var tabla = document.getElementById('contenido1');
+                                    var datos = XLSX.utils.table_to_sheet(tabla);
+                            
+                                    // Crear un libro de Excel
+                                    var libro = XLSX.utils.book_new();
+                                    XLSX.utils.book_append_sheet(libro, datos, 'Hoja1');
+                            
+                                    // Descargar el archivo Excel
+                                    XLSX.writeFile(libro, 'REPORTE DE TEMASatos.xlsx');
+                                }
+                            </script>
+                        </body>
+                    </div>
+                {% elif tipoR == "Reporte de temas" %}
+                    <div class="col-md-12">
+                        <button class="btn btn-danger" onclick="generarPDF1()">Generar PDF</button>
+                        <button class="btn btn-danger" onclick="exportarExcel()">Exportar a Excel</button>
+                        <br><br><br>
+                        <div class="form-group">
+                            <iframe id="document-frame" style="display: none; width: 100%; height: 500px;"></iframe>
+                        </div>
+                        <!-- PDF -->
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Generar PDF desde HTML</title>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+                            <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+                        </head>
+                        </head>
+                        <body>
+                            <div id="contenido1">
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        table {
+                                        border-collapse: collapse;
+                                        width: 100%;
+                                        }
+                                        th, td {
+                                        border: 1px solid #dddddd;
+                                        text-align: left;
+                                        padding: 8px;
+                                        }
+                                        th {
+                                        background-color: #f2f2f2;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                <table>
+                                    <tr>
+                                        <td rowspan="2"><img src="static/assets/img/LOGO-PAIDEA.png" class="img-fluid float-md-left" width="150" height="100" alt="Logo de AMAC"/></td>
+                                        <td colspan="3">
+                                            <div class="text-center">SISTEMA PARA EL DESARROLLO INTEGRAL DE LA FAMILIA DEL ESTADO DE SONORA</div>
+                                        </td>
+                                        <td rowspan="2"><img src="static/assets/img/logocifa.jpg" class="img-fluid float-md-right" width="200" height="150" alt="Logo de AMAC"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="text-center">PROGRAMA DE PREVENCION Y ATENCION INTEGRAL DEL EMBARAZO EN ADOLESCENTES</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="align-left" aria-hidden="true">Municipio de: CAJEME</div>
+                                            <div class="align-right" aria-hidden="true">DEL: {{mes}} / AL: {{año}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Meta</th>
+                                        <th>Tema</th>
+                                        <th>Objetivo</th>
+                                        <th>Material</th>
+                                        <th>Duracion</th>
+                                    </tr>
+                                    {% for t in temas %}
+                                    <tr>
+                                        <td>{{t.meta}}</td>
+                                        <td>{{t.nombre}}</td>
+                                        <td>{{t.objetivo}}</td>
+                                        <td>{{t.material}}</td>
+                                        <td>{{t.duracion}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                                </body>
+                            </div>
+                            <script>
+                                function generarPDF1() {
+                                    var opciones = {
+                                        margin: 10,
+                                        filename: 'REPORTE DE TEMAS.pdf',
+                                        image: { type: 'jpeg', quality: 0.98 },
+                                        html2canvas: { scale: 2 },
+                                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                                    };
+                                    var contenido = document.getElementById('contenido1');
+                                    html2pdf(contenido, opciones);
+                                }
+                            </script>
+                            <script>
+                                function exportarExcel() {
+                                    // Obtener datos de la tabla
+                                    var tabla = document.getElementById('contenido1');
+                                    var datos = XLSX.utils.table_to_sheet(tabla);
+                            
+                                    // Crear un libro de Excel
+                                    var libro = XLSX.utils.book_new();
+                                    XLSX.utils.book_append_sheet(libro, datos, 'Hoja1');
+                            
+                                    // Descargar el archivo Excel
+                                    XLSX.writeFile(libro, 'REPORTE DE TEMAS.xlsx');
+                                }
+                            </script>
+                        </body>
+                    </div>
+                {% elif tipoR == "Reporte cualitativo de metas" %}
+                    <div class="col-md-12">
+                        <button class="btn btn-danger" onclick="generarPDF1()">Generar PDF</button>
+                        <button class="btn btn-danger" onclick="exportarExcel()">Exportar a Excel</button>
+                        <br><br><br>
+                        <div class="form-group">
+                            <iframe id="document-frame" style="display: none; width: 100%; height: 500px;"></iframe>
+                        </div>
+                        <!-- PDF -->
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Generar PDF desde HTML</title>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+                            <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+                        </head>
+                        <body>
+                            
+                            <div id="contenido1">
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        table {
+                                        border-collapse: collapse;
+                                        width: 100%;
+                                        }
+                                        th, td {
+                                        border: 1px solid #dddddd;
+                                        text-align: left;
+                                        padding: 8px;
+                                        }
+                                        th {
+                                        background-color: #f2f2f2;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                <table>
+                                    <tr>
+                                        <td rowspan="4"><img src="static/assets/img/LOGO-PAIDEA.png" class="img-fluid float-md-left" width="150" height="100" alt="Logo de AMAC"/></td>
+                                        <td colspan="5">
+                                            <div class="text-center">SISTEMA PARA EL DESARROLLO INTEGRAL DE LA FAMILIA DEL ESTADO DE SONORA</div>
+                                        </td>
+                                        <td rowspan="4"><img src="static/assets/img/logocifa.jpg" class="img-fluid float-md-right" width="200" height="150" alt="Logo de AMAC"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="text-center">DIRECCION DE EVALUACION E INNOVACION INSTITUCIONAL</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="text-center">INFORME CUALITATIVO DEL MES METAS REALIZADAS PROGRAMA PAIDEA</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="text-center">PROGRAMA DE PREVENCION Y ATENCION INTEGRAL DEL EMBARAZO EN ADOLESCENTES</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="align-left" aria-hidden="true">Municipio de: CAJEME</div>
+                                            <div class="align-right" aria-hidden="true">DEL: {{mes}} / AL: {{año}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Dia</th>
+                                        <th>Tema</th>
+                                        <th>Lugar</th>
+                                        <th>Material</th>
+                                        <th>Personas</th>
+                                        <th>F</th>
+                                        <th>M</th>
+                                    </tr>
+                                    {% for t in context %}
+                                    <tr>
+                                        <td>{{t.fecha}}</td>
+                                        <td>{{t.tema}}</td>
+                                        <td>{{t.ubicacion}}</td>
+                                        <td>{{t.material}}</td>
+                                        <td>{{t.total_personas}}</td>
+                                        <td>{{t.cant_mujeres}}</td>
+                                        <td>{{t.cant_hombres}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                                <br><br><br><br>
+                                <table>
+                                    <tr>
+                                        <td class="text-center">MTRO. ARMANDO MEZA VALDEZ</td>
+                                        <td class="text-center">DRA. MARTHA PATRICIA PATIÑO FIERRO</td>
+                                    </tr>
+                                </table>
+                                </body>
+                            </div>
+                            <script>
+                                function generarPDF1() {
+                                    var opciones = {
+                                        margin: 10,
+                                        filename: 'REPORTE CUALITATIVO DE METAS.pdf',
+                                        image: { type: 'jpeg', quality: 0.98 },
+                                        html2canvas: { scale: 2 },
+                                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                                    };
+                                    var contenido = document.getElementById('contenido1');
+                                    html2pdf(contenido, opciones);
+                                }
+                            </script>
+                            <script>
+                                function exportarExcel() {
+                                    // Obtener datos de la tabla
+                                    var tabla = document.getElementById('contenido1');
+                                    var datos = XLSX.utils.table_to_sheet(tabla);
+                            
+                                    // Crear un libro de Excel
+                                    var libro = XLSX.utils.book_new();
+                                    XLSX.utils.book_append_sheet(libro, datos, 'Hoja1');
+                            
+                                    // Descargar el archivo Excel
+                                    XLSX.writeFile(libro, 'REPORTE CUALITATIVO DE METAS.xlsx');
+                                }
+                            </script>
+                        </body>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/dist/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock javascripts %}

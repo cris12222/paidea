@@ -1,0 +1,41 @@
+    <div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
+        <div class="logo d-flex justify-content-center">
+            <a target="_blank" rel="noopener noreferrer" href="#">
+                <img src="/static/assets/img/logocifa.jpg" class="img-fluid" width="200" height="200" alt="Logo de CIFA"/>
+            </a>
+        </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item {% if 'index' in segment %} active {% endif %}">
+            <a class="nav-link" href="/">
+              <i class="material-icons">dashboard</i>
+              <p>Panel de inicio</p>
+            </a>
+          </li>
+          <li class="nav-item {% if 'ui-typography' in segment %} active {% endif %}">
+            <a class="nav-link" href="Metas">
+              <i class="material-icons">library_books</i>
+              <p>Metas</p>
+            </a>
+          </li>
+          <li class="nav-item {% if 'ui-tables' in segment %} active {% endif %}">
+            <a class="nav-link" href="Temas">
+              <i class="material-icons">content_paste</i>
+              <p>Temas</p>
+            </a>
+          </li>
+          <li class="nav-item {% if 'ui-icons' in segment %} active {% endif %}">
+            <a class="nav-link" href="Eventos">
+              <i class="material-icons">bubble_chart</i>
+              <p>Eventos</p>
+            </a>
+          </li>
+          <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
+            <a class="nav-link" href="Reportes">
+              <i class="material-icons">location_ons</i>
+              <p>Reportes</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
